@@ -4,7 +4,7 @@
     display: flex;
     justify-content: center;
     height: 40px;
-    background-color: rgba(251, 152, 60, 0.9);
+    background: linear-gradient(to right, rgb(0, 73, 172), rgb(0, 200, 248));
 }
 
 ul {
@@ -13,6 +13,7 @@ ul {
     padding: auto;
     display: flex;
     flex-direction: row;
+    cursor: pointer;
 }
 
 li {
