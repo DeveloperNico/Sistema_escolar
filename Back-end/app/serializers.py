@@ -1,21 +1,29 @@
 from rest_framework import serializers
-from .models import Usuario, Professor, Disciplina, ReservaAmbiente
+from .models import Usuario, Disciplina, ReservaAmbiente
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = '__all__'
-    
-class ProfessorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Professor
-        fields = '__all__'
+        fields = ['id', 'username', 'email', 'password', 'cargo', 'ni', 'telefone', 'dt_nascimento', 'dt_contratacao']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = Usuario(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
 
 class DisciplinaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Disciplina
         fields = '__all__'
+
+    def validate(self, value):
+        if self.cargo != 'P':
+            raise serializers.ValidationError("Apenas professores podem criar disciplinas.")
+        return value
 
 class ReservaAmbienteSerializer(serializers.ModelSerializer):
     class Meta:

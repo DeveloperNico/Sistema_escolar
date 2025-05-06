@@ -1,7 +1,7 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import LoginSerializer, UsuarioSerializer, ProfessorSerializer, DisciplinaSerializer, ReservaAmbienteSerializer
+from .serializers import LoginSerializer, UsuarioSerializer, DisciplinaSerializer, ReservaAmbienteSerializer
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .models import Usuario, Professor, Disciplina, ReservaAmbiente
+from .models import Usuario, Disciplina, ReservaAmbiente
 from .permissions import IsGestor, IsProfessor
 from rest_framework import permissions
 
@@ -16,21 +16,6 @@ class UsuarioListCreateView(ListCreateAPIView):
 class UsuarioRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
-    permission_classes = [IsGestor]
-    lookup_field = 'pk'
-
-class ProfessorListCreateView(ListCreateAPIView):
-    queryset = Professor.objects.all()
-    serializer_class = ProfessorSerializer
-    
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [permissions.IsAuthenticated()]
-        return [IsGestor()]
-    
-class ProfessorRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
-    queryset = Professor.objects.all()
-    serializer_class = ProfessorSerializer
     permission_classes = [IsGestor]
     lookup_field = 'pk'
 
@@ -63,3 +48,11 @@ class ReservaAmbienteRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = ReservaAmbienteSerializer
     permission_classes = [IsGestor]
     lookup_field = 'pk'
+
+class ProfessoresListView(ListCreateAPIView):
+    queryset = Usuario.objects.filter(cargo='P')
+    serializer_class = UsuarioSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Usuario.objects.filter(cargo='P')
