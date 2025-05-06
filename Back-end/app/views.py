@@ -52,7 +52,7 @@ class ReservaAmbienteRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 class ProfessoresListView(ListCreateAPIView):
     queryset = Usuario.objects.filter(cargo='P')
     serializer_class = UsuarioSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsGestor]
 
     def get_queryset(self):
         return Usuario.objects.filter(cargo='P')
