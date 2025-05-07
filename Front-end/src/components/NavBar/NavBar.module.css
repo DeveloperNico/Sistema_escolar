@@ -2,9 +2,27 @@
 
 .container {
     display: flex;
-    justify-content: center;
-    height: 40px;
-    background: linear-gradient(to right, rgb(0, 73, 172), rgb(0, 200, 248));
+    justify-content: space-between;
+    height: 80px;
+    padding: 0 60px;
+    background: linear-gradient(to right, rgb(0, 73, 172), rgb(0, 135, 168));
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    & h1 {
+        font-family: 'Poppins', sans-serif;
+        color: #fff;
+    }
+
+    & .logoIcon {
+        width: 60px;
+        height: 40px;
+        color: #fff;
+    }
 }
 
 ul {
@@ -21,7 +39,7 @@ li {
     align-items: center;
     justify-content: center;
     padding: 10px;
-    color: rgb(236, 233, 228);
+    color: rgb(255, 255, 255);
     font-size: 16px;
     font-family: 'Poppins', sans-serif;
 }
@@ -29,4 +47,10 @@ li {
 li a.active {
     color: rgb(87, 76, 138);
     text-decoration: none;
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 20px;
+    }
 }
