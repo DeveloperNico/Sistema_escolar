@@ -11,7 +11,7 @@ export function NavBar() {
             </div>
             <div className={styles.nav}>
                 <NavLink to="/home" className={({ isActive }) => isActive ? styles.active : undefined}>Home</NavLink>
-                <NavLink to="/login" className={({ isActive }) => isActive ? styles.active : undefined}>Login</NavLink>
+                <NavLink to="/" className={({ isActive }) => isActive ? styles.active : undefined}>Login</NavLink>
             </div>
         </nav>
     )
