@@ -16,6 +16,7 @@
     & h1 {
         font-family: 'Poppins', sans-serif;
         color: #fff;
+        cursor: default;
     }
 
     & .logoIcon {
@@ -25,28 +26,29 @@
     }
 }
 
-ul {
-    list-style: none;
-    margin-right: 20px;
-    padding: auto;
+.nav {
     display: flex;
-    flex-direction: row;
-    cursor: pointer;
+    gap: 20px;
+    justify-content: center;
+    font-weight: bold;
 }
 
-li {
+.nav a {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 10px;
     color: rgb(255, 255, 255);
     font-size: 16px;
+    font-weight: 400;
     font-family: 'Poppins', sans-serif;
 }
 
-li a.active {
-    color: rgb(87, 76, 138);
-    text-decoration: none;
+
+.active {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    color: white;
 }
 
 @media (max-width: 480px) {

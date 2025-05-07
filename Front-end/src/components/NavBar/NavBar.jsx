@@ -1,5 +1,6 @@
 import styles from './NavBar.module.css';
 import { BookOpenText } from 'lucide-react';
+import { NavLink } from "react-router-dom";
 
 export function NavBar() {
     return (
@@ -8,10 +9,10 @@ export function NavBar() {
                 <BookOpenText className={styles.logoIcon}/>
                 <h1>EduFlow</h1>
             </div>
-            <ul>
-                <li>Home</li>
-                <li>Login</li>
-            </ul>
+            <div className={styles.nav}>
+                <NavLink to="/home" className={({ isActive }) => isActive ? styles.active : undefined}>Home</NavLink>
+                <NavLink to="/login" className={({ isActive }) => isActive ? styles.active : undefined}>Login</NavLink>
+            </div>
         </nav>
     )
 }
