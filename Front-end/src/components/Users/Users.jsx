@@ -16,6 +16,12 @@ export function Users() {
         return "Desconhecido";
     };
 
+    const formatDate = (dataStr) => {
+        if (!dataStr) return "";
+        const [ano, mes, dia] = dataStr.split("-");
+        return `${dia}/${mes}/${ano}`;
+    };    
+
     useEffect(() => {
         const token = localStorage.getItem('token');
 
@@ -57,24 +63,24 @@ export function Users() {
     if (loading) return <p>Carregando usuários...</p>
 
     return (
-        <>
+        <div className={styles.center}>
             <div className={styles.container}>
                 <h1>Usuários</h1>
-                <div className={styles.lista}>
+                <div className={styles.list}>
                     {usuarios.map(usuario => (
                         <div className={styles.card} key={usuario.id}>
                             <h2>{usuario.username}</h2>
                             <p><strong>Cargo:</strong> {cargoLabel(usuario.cargo)}</p>
                             <p><strong>NI:</strong> {usuario.ni}</p>
                             <p><strong>Telefone:</strong> {usuario.telefone}</p>
-                            <p><strong>Nascimento:</strong> {usuario.dt_nascimento}</p>
-                            <p><strong>Contratação:</strong> {usuario.dt_contratacao}</p>
+                            <p><strong>Nascimento:</strong> {formatDate(usuario.dt_nascimento)}</p>
+                            <p><strong>Contratação:</strong> {formatDate(usuario.dt_contratacao)}</p>
 
                             <div className={styles.actions}>
-                                <button onClick={() => handleDelete(usuario.id)} className={styles.iconTrash}>
+                                <button onClick={() => handleDelete(usuario.id)} className={`${styles.iconButton} ${styles.iconTrash}`}>
                                     <Trash2 />
                                 </button>
-                                <button onClick={() => handleEdit(usuario.id)} className={styles.iconPencil}>
+                                <button onClick={() => handleEdit(usuario)} className={`${styles.iconButton} ${styles.iconPencil}`}>
                                     <Pencil />
                                 </button>
                             </div>
@@ -82,6 +88,6 @@ export function Users() {
                     ))}
                 </div>
             </div>
-        </>
+        </div>
     );
 }

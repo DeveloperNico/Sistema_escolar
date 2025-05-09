@@ -1,53 +1,85 @@
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-.header {
+.center {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
 }
 
 .container {
+    width: 1000px;
+    padding: 40px;
+    background-color: #f0f0f0;
+    border: 5px solid #ccc;
+    border-radius: 10px;
+    color: #292929;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    gap: 60px;
-    background-color: #f0f0f0;
-    margin: 60px 0;
-    padding: 40px;
-    border-radius: 10px;
-    border: 5px solid #ccc;
-    color: #292929;
+    gap: 40px;
     font-family: 'Poppins', sans-serif;
+    margin: 60px 0;
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
     display: flex;
-    justify-content: space-between;
-    gap: 100px;
-    margin-bottom: 20px;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+}
 
-    & h2 {
-        width: 200px;
-    }
+.card h2 {
+    margin: 0;
+}
 
-    & p {
-        width: 211px;
-    }
+.card p {
+    margin: 0;
+    font-size: 14px;
 }
 
 .actions {
     display: flex;
-    gap: 20px;
+    gap: 10px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.iconButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    transition: transform 0.2s;
+}
+
+.iconButton:hover {
+    transform: scale(1.1);
 }
 
 .iconTrash {
-    border: none;
-    cursor: pointer;
-    color: #d81010;
+    color: #f80a0a;
 }
 
 .iconPencil {
-    border: none;
-    cursor: pointer;
     color: #397DB9;
 }
