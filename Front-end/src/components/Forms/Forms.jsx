@@ -21,6 +21,8 @@ export function Forms() {
             localStorage.setItem("access", access);
             localStorage.setItem("refresh", refresh);
 
+            localStorage.setItem("token", access);
+
             navigate("/home");
         } catch (error) {
             alert("Erro ao fazer login. Verifique suas credenciais.");
