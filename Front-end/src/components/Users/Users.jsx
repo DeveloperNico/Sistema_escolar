@@ -65,7 +65,13 @@ export function Users() {
     return (
         <div className={styles.center}>
             <div className={styles.container}>
-                <h1>Usuários</h1>
+                <div className={styles.header}>
+                    <h1>Usuários</h1>
+                    <button className={styles.addButton}>
+                        <Plus />
+                        Add. Usuário
+                    </button>
+                </div>
                 <div className={styles.list}>
                     {usuarios.map(usuario => (
                         <div className={styles.card} key={usuario.id}>
