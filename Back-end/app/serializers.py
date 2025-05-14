@@ -28,8 +28,10 @@ class DisciplinaSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Apenas professores podem criar disciplinas.")
         return value
 
-
 class ReservaAmbienteSerializer(serializers.ModelSerializer):
+    professor_responsavel = UsuarioSerializer(read_only=True)
+    disciplina_associada = DisciplinaSerializer(read_only=True)
+
     class Meta:
         model = ReservaAmbiente
         fields = '__all__'

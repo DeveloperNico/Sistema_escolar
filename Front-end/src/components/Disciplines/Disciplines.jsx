@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import { Trash2, Pencil, Plus } from 'lucide-react';
+import { Apple } from 'lucide-react';
 
 export function Disciplines() {
     const [disciplinas, setDisciplinas] = useState([]);
