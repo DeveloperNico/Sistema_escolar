@@ -7,6 +7,11 @@ export function Environments() {
     const [reservas, setReservas] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const formatDateTime = (datetime) => {
+        const date = new Date(datetime);
+        return date.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+    };    
+
     useEffect(() => {
         const token = localStorage.getItem('token');
 
@@ -60,8 +65,8 @@ export function Environments() {
                         <div className={styles.card} key={r.id}>
                             <h2>{r.sala_reservada}</h2>
                             <p><strong>Período:</strong> {r.periodo}</p>
-                            <p><strong>Início:</strong> {new Date(r.dt_inicio).toLocaleString()}</p>
-                            <p><strong>Término:</strong> {new Date(r.dt_termino).toLocaleString()}</p>
+                            <p><strong>Início:</strong> {formatDateTime(r.dt_inicio)}</p>
+                            <p><strong>Término:</strong> {formatDateTime(r.dt_termino)}</p>
                             <p><strong>Disciplina:</strong> {r.disciplina_associada?.nome || 'N/A'}</p>
                             <p><strong>Professor:</strong> {r.professor_responsavel?.username || 'N/A'}</p>
 
