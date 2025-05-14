@@ -14,7 +14,7 @@ class Usuario(AbstractUser):
         regex=r'^\d{5}/\d{2}$', 
         message='O número de identificação deve seguir o formato 12345/67'
     )
-    ni = models.CharField(max_length=10, unique=True, validators=[validador_ni], blank=True, null=True)
+    ni = models.CharField(max_length=8, unique=True, validators=[validador_ni], blank=True, null=True)
     validador_telefone = RegexValidator (
         regex=r'^\d{2} \d{5}-\d{4}$',
         message='O telefone deve seguir o formato 12 12345-6789'

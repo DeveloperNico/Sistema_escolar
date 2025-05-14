@@ -87,6 +87,17 @@ a {
     }
 }
 
+@media (max-width: 1600px) {
+    .container {
+        width: 100%;
+    }
+
+    .card {
+        width: 100%;
+        gap: 40px;
+    }
+}
+
 @media (max-width: 1024px) {
     .container {
         display: grid;
