@@ -16,14 +16,18 @@ class UsuarioSerializer(serializers.ModelSerializer):
         return user
 
 class DisciplinaSerializer(serializers.ModelSerializer):
+    professor = UsuarioSerializer(read_only=True)
+
     class Meta:
         model = Disciplina
         fields = '__all__'
 
     def validate(self, value):
-        if self.cargo != 'P':
+        user = self.context['request'].user
+        if user.cargo != 'P':
             raise serializers.ValidationError("Apenas professores podem criar disciplinas.")
         return value
+
 
 class ReservaAmbienteSerializer(serializers.ModelSerializer):
     class Meta:
