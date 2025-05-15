@@ -95,6 +95,13 @@ input {
     margin-bottom: 20px;
 }
 
+select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-family: 'Poppins', sans-serif;
+}
+
 @media (max-width: 1260px) {
     .form {
         width: 1000px;
