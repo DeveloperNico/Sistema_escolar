@@ -2,7 +2,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import LoginSerializer, UsuarioSerializer, DisciplinaSerializer, ReservaAmbienteSerializer
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Usuario, Disciplina, ReservaAmbiente
-from .permissions import IsGestor, IsProfessor
+from .permissions import IsGestor
 from rest_framework import permissions
 
 class LoginView(TokenObtainPairView):
