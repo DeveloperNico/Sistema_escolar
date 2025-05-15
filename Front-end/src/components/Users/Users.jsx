@@ -133,7 +133,7 @@ export function Users() {
                     ))}
                 </div>
             </div>  
-            <Modal title="Cadastrar Novo Usuário" isOpen={showModal} onClose={() => setShowModal(false)}>
+            <Modal title="Cadastrar novo usuário" isOpen={showModal} onClose={() => setShowModal(false)}>
                 <form onSubmit={handleCreateUser} className={styles.form}>
                     <label>
                         Nome de usuário:
