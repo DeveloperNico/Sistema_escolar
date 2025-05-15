@@ -28,6 +28,12 @@ class DisciplinaListCreateView(ListCreateAPIView):
             return [permissions.IsAuthenticated()]
         return [IsGestor()]
     
+    def get_queryset(self):
+        user = self.request.user
+        if user.cargo == 'P':
+            return Disciplina.objects.filter(professor=user)
+        return Disciplina.objects.all()
+    
 class DisciplinaRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     queryset = Disciplina.objects.all()
     serializer_class = DisciplinaSerializer
@@ -42,6 +48,12 @@ class ReservaAmbienteListCreateView(ListCreateAPIView):
         if self.request.method == 'GET':
             return [permissions.IsAuthenticated()]
         return [IsGestor()]
+    
+    def get_queryset(self):
+        user = self.request.user
+        if user.cargo == 'P':
+            return ReservaAmbiente.objects.filter(professor_responsavel=user)
+        return ReservaAmbiente.objects.all()
 
 class ReservaAmbienteRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     queryset = ReservaAmbiente.objects.all()
