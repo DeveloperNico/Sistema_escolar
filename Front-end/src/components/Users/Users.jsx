@@ -73,7 +73,9 @@ export function Users() {
                     </button>
                 </div>
                 <div className={styles.list}>
-                    {usuarios.map(usuario => (
+                    {usuarios
+                        .filter(usuario => usuario.username?.trim().toLowerCase() !== "admin")
+                        .map(usuario => (
                         <div className={styles.card} key={usuario.id}>
                             <h2>{usuario.username}</h2>
                             <p><strong>Cargo:</strong> {cargoLabel(usuario.cargo)}</p>

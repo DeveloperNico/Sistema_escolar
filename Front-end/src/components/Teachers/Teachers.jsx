@@ -66,7 +66,9 @@ export function Teachers() {
                     </button>
                 </div>
                 <div className={styles.list}>
-                    {professores.map(professor => (
+                    {professores
+                        .filter(professor => professor.username?.trim().toLowerCase() !== "admin")
+                        .map(professor => (
                         <div className={styles.card} key={professor.id}>
                             <h2>{professor.username}</h2>
                             <p><strong>NI:</strong> {professor.ni}</p>
