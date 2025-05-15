@@ -38,11 +38,11 @@ export function Forms() {
                         <h2 className={styles.title}>Login</h2>
                         <div className={styles.username}>
                             <label>Nome de usuário:</label>
-                            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                            <input className={styles.input} type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
                         </div>
                         <div className={styles.password}>
                             <label>Senha:</label>
-                            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                            <input className={styles.input} type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                         </div>
 
                         <div className={styles.buttonContainer}>

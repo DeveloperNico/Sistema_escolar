@@ -43,7 +43,7 @@
     flex-direction: column;
 }
 
-input {
+.input {
     width: 500px;
     height: 40px;
     border: none;
@@ -95,13 +95,6 @@ input {
     margin-bottom: 20px;
 }
 
-select {
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-family: 'Poppins', sans-serif;
-}
-
 @media (max-width: 1260px) {
     .form {
         width: 1000px;
@@ -112,7 +105,7 @@ select {
         height: 300px;
     }
 
-    input {
+    .input {
         width: 400px;
         height: 40px;
     } 
@@ -128,7 +121,7 @@ select {
         height: 200px;
     }
 
-    input {
+    .input {
         width: 300px;
     }
 }
@@ -142,7 +135,7 @@ select {
         display: none;
     }
 
-    input {
+    .input {
         width: 500px;
     }
 }
@@ -164,7 +157,7 @@ select {
         display: none;
     }
 
-    input {
+    .input {
         width: 200px;
     }
 }
@@ -186,7 +179,7 @@ select {
         display: none;
     }
 
-    input {
+    .input {
         width: 200px;
     }
 }
