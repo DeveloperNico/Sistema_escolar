@@ -4,11 +4,10 @@ import axios from 'axios';
 
 import { Trash2 } from 'lucide-react';
 import { Pencil } from 'lucide-react';
-import { Plus } from 'lucide-react';
 
 export function Teachers() {
     const [professores, setProfessores] = useState([]);
-    const [loading, setLoading] = useState(true);    
+    const [loading, setLoading] = useState(true);
 
     const formatDate = (dataStr) => {
         if (!dataStr) return "";
@@ -60,10 +59,6 @@ export function Teachers() {
             <div className={styles.container}>
                 <div className={styles.header}>
                     <h1>Professores</h1>
-                    <button className={styles.addButton}>
-                        <Plus />
-                        Add. Professor
-                    </button>
                 </div>
                 <div className={styles.list}>
                     {professores

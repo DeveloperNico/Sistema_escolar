@@ -14,25 +14,6 @@
     align-items: center;
 }
 
-.addButton {
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    background-color: #397DB9;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 40px;
-    transition: 0.2s ease-in-out;
-}
-
-.addButton:hover {
-    background-color: #2d6491;
-}
-
 .container {
     width: 100%;
     padding: 40px;
@@ -62,6 +43,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    cursor: default;
 }
 
 .card {
@@ -123,11 +105,6 @@
         flex-direction: column;
         align-items: flex-start;
     }
-
-    .addButton {
-        width: 100%;
-        margin-bottom: 20px;
-    }
 }
 
 @media (max-width: 768px) {
@@ -140,10 +117,5 @@
     .header {
         flex-direction: column;
         align-items: flex-start;
-    }
-
-    .addButton {
-        width: 100%;
-        margin: 20px 0;
     }
 }
