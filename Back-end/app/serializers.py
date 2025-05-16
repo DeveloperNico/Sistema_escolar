@@ -32,6 +32,13 @@ class ReservaAmbienteSerializer(serializers.ModelSerializer):
     professor_responsavel = UsuarioSerializer(read_only=True)
     disciplina_associada = DisciplinaSerializer(read_only=True)
 
+    professor_responsavel_id = serializers.PrimaryKeyRelatedField(
+        queryset=Usuario.objects.all(), write_only=True, source='professor_responsavel'
+    )
+    disciplina_associada_id = serializers.PrimaryKeyRelatedField(
+        queryset=Disciplina.objects.all(), write_only=True, source='disciplina_associada'
+    )
+
     class Meta:
         model = ReservaAmbiente
         fields = '__all__'

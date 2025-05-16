@@ -8,5 +8,6 @@ urlpatterns = [
     path('disciplinas/', view=DisciplinaListCreateView.as_view()),
     path('disciplinas/<int:pk>/', view=DisciplinaRetrieveUpdateDestroyView.as_view()),
     path('reservasambiente/', view=ReservaAmbienteListCreateView.as_view()),
+    path('reservasambiente/<int:pk>/', view=ReservaAmbienteRetrieveUpdateDestroyView.as_view()),
     path('professores/', view=ProfessoresListView.as_view())
 ]
