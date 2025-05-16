@@ -137,16 +137,16 @@ export function Users() {
                 <form onSubmit={handleCreateUser} className={styles.form}>
                     <label>
                         Nome de usuário:
-                        <input type="text" value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value })} required />
+                        <input className={styles.inputModal} type="text" value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value })} required />
                     </label>
                     <label>
                         Senha:
-                        <input type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} required />
+                        <input className={styles.inputModal} type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} required />
                     </label>
                     <div>
                         <label>
                             Cargo:
-                            <select value={newUser.cargo} onChange={(e) => setNewUser({ ...newUser, cargo: e.target.value })}>
+                            <select className={styles.inputChoices} value={newUser.cargo} onChange={(e) => setNewUser({ ...newUser, cargo: e.target.value })}>
                                 <option value="P">Professor</option>
                                 <option value="G">Gestor</option>
                             </select>
@@ -155,20 +155,20 @@ export function Users() {
                     <div>
                         <label>
                             NI:
-                            <input type="text" value={newUser.ni} onChange={(e) => setNewUser({ ...newUser, ni: e.target.value })} />
+                            <input className={styles.inputModal} type="text" value={newUser.ni} onChange={(e) => setNewUser({ ...newUser, ni: e.target.value })} />
                         </label>
                     </div>
                     <label>
                         Telefone:
-                        <input type="text" value={newUser.telefone} onChange={(e) => setNewUser({ ...newUser, telefone: e.target.value })} />
+                        <input className={styles.inputModal} type="text" value={newUser.telefone} onChange={(e) => setNewUser({ ...newUser, telefone: e.target.value })} />
                     </label>
                     <label>
                         Data de nascimento:
-                        <input type="date" value={newUser.dt_nascimento} onChange={(e) => setNewUser({ ...newUser, dt_nascimento: e.target.value })} />
+                        <input className={styles.inputModal} type="date" value={newUser.dt_nascimento} onChange={(e) => setNewUser({ ...newUser, dt_nascimento: e.target.value })} />
                     </label>
                     <label>
                         Data de contratação:
-                        <input type="date" value={newUser.dt_contratacao} onChange={(e) => setNewUser({ ...newUser, dt_contratacao: e.target.value })} />
+                        <input className={styles.inputModal} type="date" value={newUser.dt_contratacao} onChange={(e) => setNewUser({ ...newUser, dt_contratacao: e.target.value })} />
                     </label>
 
                     <button className={styles.button} type="submit">Cadastrar</button>
