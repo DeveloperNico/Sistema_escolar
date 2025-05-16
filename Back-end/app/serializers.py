@@ -18,6 +18,9 @@ class UsuarioSerializer(serializers.ModelSerializer):
 class DisciplinaSerializer(serializers.ModelSerializer):
     professor = UsuarioSerializer(read_only=True)
 
+    professor_responsavel_id = serializers.PrimaryKeyRelatedField(
+        queryset=Usuario.objects.all(), write_only=True, source='professor_responsavel'
+    )
     class Meta:
         model = Disciplina
         fields = '__all__'
