@@ -1,11 +1,45 @@
 import styles from './Environments.module.css'; // Ou './Reservas.module.css' se preferir separado
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Modal } from '../Modal/Modal';
 import { Trash2, Pencil, Plus } from 'lucide-react';
 
 export function Environments() {
     const [reservas, setReservas] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+    const [newEnvironment, setNewEnvironment] = useState({
+        dt_inicio: '',
+        dt_termino: '',
+        periodo: 'Manhã',
+        sala_reservada: '',
+        prodessor_responsavel: null,
+        disciplina_associada: null
+    });
+
+    const handleCreateEnvironment = (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+    
+        axios.post('http://localhost:8000/api/reservasambiente/', newEnvironment, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(response => {
+            setReservas(prev => [...prev, response.data]);
+            setShowModal(false);
+            setNewUser({
+                dt_inicio: '',
+                dt_termino: '',
+                periodo: 'Manhã',
+                sala_reservada: '',
+                professor_responsavel: null,
+                disciplina_associada: null
+            });
+        })
+        .catch(error => {
+            console.error("Erro ao reservar ambiente:", error);
+        });
+    };
 
     const formatDateTime = (datetime) => {
         const date = new Date(datetime);
@@ -55,7 +89,7 @@ export function Environments() {
             <div className={styles.container}>
                 <div className={styles.header}>
                     <h1>Reservas de Ambiente</h1>
-                    <button className={styles.addButton}>
+                    <button className={styles.addButton} onClick={() => setShowModal(true)}>
                         <Plus />
                         Add. Reserva
                     </button>
@@ -82,6 +116,40 @@ export function Environments() {
                     ))}
                 </div>
             </div>
+            <Modal title="Reservar novo ambiente" isOpen={showModal} onClose={() => setShowModal(false)}>
+                <form onSubmit={handleCreateEnvironment} className={styles.form}>
+                    <label>
+                        Data de início:
+                        <input className={styles.inputModal} type="datetime-local" value={newEnvironment.dt_inicio} onChange={(e) => setNewEnvironment({ ...newEnvironment, dt_inicio: e.target.value })} />
+                    </label>
+                    <label>
+                        Data de início:
+                        <input className={styles.inputModal} type="datetime-local" value={newEnvironment.dt_termino} onChange={(e) => setNewEnvironment({ ...newEnvironment, dt_termino: e.target.value })} />
+                    </label>
+                    <label>
+                        Período:
+                        <select className={styles.inputChoices} value={newEnvironment.periodo} onChange={(e) => setNewEnvironment({ ...newEnvironment, periodo: e.target.value })}>
+                            <option value="Manhã">Manhã</option>
+                            <option value="Tarde">Tarde</option>
+                            <option value="Noite">Noite</option>
+                        </select>
+                    </label>
+                    <label>
+                        Sala reservada:
+                        <input className={styles.inputModal} type="text" value={newEnvironment.sala_reservada} onChange={(e) => setNewEnvironment({ ...newEnvironment, sala_reservada: e.target.value })} required />
+                    </label>
+                    <label>
+                        Professor responsável:
+                        <input className={styles.inputModal} type="text" value={newEnvironment.professor_responsavel} onChange={(e) => setNewEnvironment({ ...newEnvironment, prodessor_responsavel: e.target.value })} />
+                    </label>
+                    <label>
+                        Disciplina associada:
+                        <input className={styles.inputModal} type="text" value={newEnvironment.disciplina_associada} onChange={(e) => setNewEnvironment({ ...newEnvironment, disciplina_associada: e.target.value })} />
+                    </label>
+
+                    <button className={styles.button} type="submit">Reservar</button>
+                </form>
+            </Modal>
         </div>
     );
 }

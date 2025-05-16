@@ -46,7 +46,6 @@ export function Users() {
         });
     };
     
-
     const cargoLabel = (sigla) => {
         if (sigla === "G") return "Gestor";
         if (sigla === "P") return "Professor";
@@ -143,21 +142,17 @@ export function Users() {
                         Senha:
                         <input className={styles.inputModal} type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} required />
                     </label>
-                    <div>
-                        <label>
-                            Cargo:
-                            <select className={styles.inputChoices} value={newUser.cargo} onChange={(e) => setNewUser({ ...newUser, cargo: e.target.value })}>
-                                <option value="P">Professor</option>
-                                <option value="G">Gestor</option>
-                            </select>
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            NI:
-                            <input className={styles.inputModal} type="text" value={newUser.ni} onChange={(e) => setNewUser({ ...newUser, ni: e.target.value })} />
-                        </label>
-                    </div>
+                    <label>
+                        Cargo:
+                        <select className={styles.inputChoices} value={newUser.cargo} onChange={(e) => setNewUser({ ...newUser, cargo: e.target.value })}>
+                            <option value="P">Professor</option>
+                            <option value="G">Gestor</option>
+                        </select>
+                    </label>
+                    <label>
+                        NI:
+                        <input className={styles.inputModal} type="text" value={newUser.ni} onChange={(e) => setNewUser({ ...newUser, ni: e.target.value })} />
+                    </label>
                     <label>
                         Telefone:
                         <input className={styles.inputModal} type="text" value={newUser.telefone} onChange={(e) => setNewUser({ ...newUser, telefone: e.target.value })} />
