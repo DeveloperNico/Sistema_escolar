@@ -2,9 +2,7 @@ import styles from './Disciplines.module.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal } from '../Modal/Modal';
-
 import { Trash2, Pencil, Plus } from 'lucide-react';
-import { Apple } from 'lucide-react';
 
 const api = axios.create({
     baseURL: 'http://localhost:8000/api/',
@@ -30,9 +28,7 @@ export function Disciplines() {
     useEffect(() => {
         const loadProfessores = async () => {
             try {
-                const [resProfs] = await Promise.all([
-                    api.get('usuarios/')
-                ]);
+                const resProfs = await api.get('usuarios/');
                 setProfessores(resProfs.data);
             } catch (error) {
                 console.error("Erro ao carregar professores:", error);
@@ -48,7 +44,7 @@ export function Disciplines() {
         e.preventDefault();
         try {
             const res = await api.post('disciplinas/', newDiscipline);
-            setDisciplinas(prev = [...prev, res.data]);
+            setDisciplinas(prev => [...prev, res.data]); // Correção aqui!
             setShowModal(false);
             setNewDiscipline({
                 nome: '',
@@ -58,14 +54,8 @@ export function Disciplines() {
                 professor_responsavel_id: ''
             });
         } catch (error) {
-            console.error("Erro ao criar disciplina:", error);
+            console.error("Erro ao criar disciplina:", error.response?.data || error.message);
         }
-    };
-
-    const formatHour = (input) => {
-        if (!input) return "";
-        const horas = input.toString().replace(/[^\d]/g, "");
-        return `${horas}h`;
     };
 
     useEffect(() => {
@@ -81,7 +71,7 @@ export function Disciplines() {
             setLoading(false);
         })
         .catch(error => {
-            console.error("Erro ao buscar disciplinas:", error);
+            console.error("Erro ao buscar disciplinas:", error.response?.data);
             setLoading(false);
         });
     }, []);
@@ -101,7 +91,6 @@ export function Disciplines() {
 
     const handleEdit = (disciplina) => {
         console.log("Editar disciplina com ID:", disciplina.id);
-        // Exemplo: navigate(`/editar-disciplina/${disciplina.id}`);
     };
 
     if (loading) return <p>Carregando disciplinas...</p>;
@@ -112,8 +101,7 @@ export function Disciplines() {
                 <div className={styles.header}>
                     <h1>Disciplinas</h1>
                     <button className={styles.addButton} onClick={() => setShowModal(true)}>
-                        <Plus />
-                        Add. Disciplina
+                        <Plus /> Add. Disciplina
                     </button>
                 </div>
                 <div className={styles.list}>
@@ -121,7 +109,7 @@ export function Disciplines() {
                         <div className={styles.card} key={d.id}>
                             <h2>{d.nome}</h2>
                             <p><strong>Curso:</strong> {d.curso}</p>
-                            <p><strong>Carga horária:</strong> {formatHour(d.carga_horaria)}</p>
+                            <p><strong>Carga horária:</strong> {`${d.carga_horaria}h`}</p>
                             <p><strong>Descrição:</strong> {d.descricao || "Sem descrição"}</p>
                             <p><strong>Professor:</strong> {d.professor?.username || "N/A"}</p>
 
@@ -137,6 +125,7 @@ export function Disciplines() {
                     ))}
                 </div>
             </div>
+
             <Modal title="Adicionar nova disciplina" isOpen={showModal} onClose={() => setShowModal(false)}>
                 <form onSubmit={handleCreateDiscipline} className={styles.form}>
                     <label>
@@ -162,7 +151,8 @@ export function Disciplines() {
                     <label>
                         Professor:
                         <select className={styles.inputChoices} value={newDiscipline.professor_responsavel_id} 
-                            onChange={(e) => setNewDiscipline({...newDiscipline, professor_responsavel_id: e.target.value})}>
+                            onChange={(e) => setNewDiscipline({...newDiscipline, professor_responsavel_id: parseInt(e.target.value)})}>
+                            <option value="">Selecione</option>
                             {professores.map(p => (
                                 <option key={p.id} value={p.id}>{p.username}</option>
                             ))}

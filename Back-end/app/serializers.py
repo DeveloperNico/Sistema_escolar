@@ -27,8 +27,8 @@ class DisciplinaSerializer(serializers.ModelSerializer):
 
     def validate(self, value):
         user = self.context['request'].user
-        if user.cargo != 'P':
-            raise serializers.ValidationError("Apenas professores podem criar disciplinas.")
+        if user.cargo == 'P':
+            raise serializers.ValidationError("Apenas gestores podem criar disciplinas.")
         return value
 
 class ReservaAmbienteSerializer(serializers.ModelSerializer):
