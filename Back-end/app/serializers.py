@@ -16,7 +16,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
         return user
 
 class DisciplinaSerializer(serializers.ModelSerializer):
-    professor = UsuarioSerializer(read_only=True)
+    professor = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Disciplina

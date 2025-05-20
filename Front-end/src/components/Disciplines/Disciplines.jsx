@@ -24,7 +24,6 @@ export function Disciplines() {
         curso: '',
         carga_horaria: '',
         descricao: '',
-        professor: ''
     });
 
     useEffect(() => {
@@ -48,17 +47,17 @@ export function Disciplines() {
         e.preventDefault();
         try {
             const res = await api.post('disciplinas/', newDiscipline);
-            setDisciplinas(prev = [...prev, res.data]);
+            setDisciplinas(prev => [...prev, res.data]);
             setShowModal(false);
             setNewDiscipline({
                 nome: '',
                 curso: '',
                 carga_horaria: '',
                 descricao: '',
-                professor_responsavel_id: ''
             });
         } catch (error) {
             console.error("Erro ao criar disciplina:", error);
+            console.log("Detalhes do erro:", error.response?.data);
         }
     };
 
@@ -159,15 +158,15 @@ export function Disciplines() {
                         <textarea className={styles.inputModal} value={newDiscipline.descricao} 
                             onChange={(e) => setNewDiscipline({...newDiscipline, descricao: e.target.value})} />
                     </label>
-                    <label>
+                    {/* <label>
                         Professor:
-                        <select className={styles.inputChoices} value={newDiscipline.professor} 
-                            onChange={(e) => setNewDiscipline({...newDiscipline, professor: e.target.value})}>
+                        <select className={styles.inputChoices} value={newDiscipline.professor_responsavel_id} 
+                            onChange={(e) => setNewDiscipline({...newDiscipline, professor_responsavel_id: e.target.value})}>
                             {professores.map(p => (
                                 <option key={p.id} value={p.id}>{p.username}</option>
                             ))}
                         </select>
-                    </label>
+                    </label> */}
 
                     <button className={styles.button} type="submit">Adicionar</button>
                 </form>
