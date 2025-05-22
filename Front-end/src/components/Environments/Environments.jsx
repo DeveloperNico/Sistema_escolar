@@ -30,11 +30,22 @@ export function Environments() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [resReservas, resProfs, resDiscs] = await Promise.all([
-                    api.get('reservasambiente/'),
-                    api.get('usuarios/'),
-                    api.get('disciplinas/')
-                ]);
+                const token = localStorage.getItem('token');
+
+                // Fazendo requisição para reservas com token no header
+                const resReservas = await axios.get('http://localhost:8000/api/reservasambiente/', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                // Professores e disciplinas podem continuar com a instância api ou igual
+                const resProfs = await axios.get('http://localhost:8000/api/usuarios/', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                const resDiscs = await axios.get('http://localhost:8000/api/disciplinas/', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
                 setReservas(resReservas.data);
                 setProfessores(resProfs.data);
                 setDisciplinas(resDiscs.data);

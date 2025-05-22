@@ -27,9 +27,10 @@ export function Forms() {
                 headers: { Authorization: `Bearer ${access}` }
             });
 
-            const { cargo } = userRes.data;
+            const { cargo, id } = userRes.data;
 
             localStorage.setItem("cargo", cargo);
+            localStorage.setItem("userId", id);
 
             console.log("Nome do usuário:", userRes.data.username);
             console.log("Cargo do usuário:", cargo);
