@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Modal } from '../Modal/Modal';
 
 import { Trash2, Pencil, Plus } from 'lucide-react';
-import { Apple } from 'lucide-react';
 
 const api = axios.create({
     baseURL: 'http://localhost:8000/api/',
@@ -18,21 +17,25 @@ export function Disciplines() {
     const [loading, setLoading] = useState(true);
     const [professores, setProfessores] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [usuario, setUsuario] = useState(null);
 
     const [newDiscipline, setNewDiscipline] = useState({
         nome: '',
         curso: '',
         carga_horaria: '',
         descricao: '',
+        professor_responsavel_id: ''
     });
 
     useEffect(() => {
         const loadProfessores = async () => {
             try {
-                const [resProfs] = await Promise.all([
-                    api.get('usuarios/')
+                const [resProfs, ResUser] = await Promise.all([
+                    api.get('usuarios/'),
+                    api.get('me/')
                 ]);
                 setProfessores(resProfs.data);
+                setUsuario(ResUser.data);
             } catch (error) {
                 console.error("Erro ao carregar professores:", error);
             } finally {
@@ -54,10 +57,15 @@ export function Disciplines() {
                 curso: '',
                 carga_horaria: '',
                 descricao: '',
+                professor_responsavel_id: ''
             });
         } catch (error) {
-            console.error("Erro ao criar disciplina:", error);
-            console.log("Detalhes do erro:", error.response?.data);
+            if (error.response?.status === 403) {
+                alert("Você não tem permissão para criar disciplinas.");
+            } else {
+                console.error("Erro ao criar disciplina:", error);
+                console.log("Detalhes do erro:", error.response?.data);
+            }
         }
     };
 
@@ -94,7 +102,11 @@ export function Disciplines() {
             setDisciplinas(prev => prev.filter(d => d.id !== id));
         })
         .catch(error => {
-            console.error("Erro ao deletar disciplina:", error);
+            if (error.response?.status === 403) {
+                alert("Você não tem permissão para deletar disciplinas.");
+            } else {
+                console.error("Erro ao deletar disciplina:", error);
+            }
         });
     };
 
@@ -110,10 +122,12 @@ export function Disciplines() {
             <div className={styles.container}>
                 <div className={styles.header}>
                     <h1>Disciplinas</h1>
-                    <button className={styles.addButton} onClick={() => setShowModal(true)}>
-                        <Plus />
-                        Add. Disciplina
-                    </button>
+                    {usuario?.cargo === 'G' && (
+                        <button className={styles.addButton} onClick={() => setShowModal(true)}>
+                            <Plus />
+                            Add. Disciplina
+                        </button>
+                    )}
                 </div>
                 <div className={styles.list}>
                     {disciplinas.map(d => (
@@ -122,7 +136,7 @@ export function Disciplines() {
                             <p><strong>Curso:</strong> {d.curso}</p>
                             <p><strong>Carga horária:</strong> {formatHour(d.carga_horaria)}</p>
                             <p><strong>Descrição:</strong> {d.descricao || "Sem descrição"}</p>
-                            <p><strong>Professor:</strong> {d.professor?.username || "N/A"}</p>
+                            <p><strong>Professor:</strong> {d.professor_responsavel?.username || "Professor não encontrado"}</p>
 
                             <div className={styles.actions}>
                                 <button onClick={() => handleDelete(d.id)} className={`${styles.iconButton} ${styles.iconTrash}`}>
@@ -158,7 +172,7 @@ export function Disciplines() {
                         <textarea className={styles.inputModal} value={newDiscipline.descricao} 
                             onChange={(e) => setNewDiscipline({...newDiscipline, descricao: e.target.value})} />
                     </label>
-                    {/* <label>
+                    <label>
                         Professor:
                         <select className={styles.inputChoices} value={newDiscipline.professor_responsavel_id} 
                             onChange={(e) => setNewDiscipline({...newDiscipline, professor_responsavel_id: e.target.value})}>
@@ -166,7 +180,7 @@ export function Disciplines() {
                                 <option key={p.id} value={p.id}>{p.username}</option>
                             ))}
                         </select>
-                    </label> */}
+                    </label>
 
                     <button className={styles.button} type="submit">Adicionar</button>
                 </form>

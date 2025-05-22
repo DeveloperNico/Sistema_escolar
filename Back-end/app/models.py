@@ -31,7 +31,7 @@ class Disciplina(models.Model):
     curso = models.CharField(max_length=100)
     carga_horaria = models.IntegerField()
     descricao = models.TextField(blank=True, null=True)
-    professor = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='disciplinas')
+    professor_responsavel = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='disciplinas')
 
     class Meta:
         verbose_name_plural = 'Disciplinas'
