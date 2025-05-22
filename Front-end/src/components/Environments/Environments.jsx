@@ -1,5 +1,5 @@
 import styles from './Environments.module.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import axios from 'axios';
 import { Modal } from '../Modal/Modal';
 import { Trash2, Pencil, Plus } from 'lucide-react';
@@ -28,28 +28,30 @@ export function Environments() {
     });
 
     useEffect(() => {
-        const loadData = async () => {
+            const loadData = async () => {
+            const token = localStorage.getItem('token');
+
+            axios.get('http://localhost:8000/api/reservasambiente/', {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                setReservas(response.data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error("Erro ao carregar reservas:", error);
+                setLoading(false);
+            });
+
             try {
-                const token = localStorage.getItem('token');
-
-                const resReservas = await axios.get('http://localhost:8000/api/reservasambiente/', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-
-                const resProfs = await axios.get('http://localhost:8000/api/usuarios/', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-
-                const resDiscs = await axios.get('http://localhost:8000/api/disciplinas/', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-
-                setReservas(resReservas.data);
-                setProfessores(resProfs.data);
-                setDisciplinas(resDiscs.data);
-
-                console.log("Token usado:", localStorage.getItem('token'));
-                console.log("Cargo do usuário:", localStorage.getItem('cargo'));
+                const [resEnvironment, resProfessores, resDisciplinas] = await Promise.all ([
+                    api.get('reservasambiente/'),
+                    api.get('usuarios/'),
+                    api.get('disciplinas/')
+                ]);
+                setReservas(resEnvironment.data);
+                setProfessores(resProfessores.data);
+                setDisciplinas(resDisciplinas.data);
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
             } finally {
@@ -99,14 +101,18 @@ export function Environments() {
 
     if (loading) return <p>Carregando reservas...</p>;
 
+    const cargo = localStorage.getItem('cargo');
+
     return (
         <div className={styles.center}>
             <div className={styles.container}>
                 <div className={styles.header}>
                     <h1>Reservas de Ambiente</h1>
-                    <button className={styles.addButton} onClick={() => setShowModal(true)}>
-                        <Plus /> Add. Reserva
-                    </button>
+                    {cargo === 'G' && (
+                        <button className={styles.addButton} onClick={() => setShowModal(true)}>
+                            <Plus /> Add. Reserva
+                        </button>
+                    )}
                 </div>
                 <div className={styles.list}>
                     {reservas.map(r => (
