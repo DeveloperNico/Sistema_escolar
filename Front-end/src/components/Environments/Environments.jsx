@@ -90,7 +90,11 @@ export function Environments() {
             setReservas(prev => prev.filter(reservas => reservas.id !== id));
         })
         .catch(error => {
-            console.error("Erro ao reserva de ambiente:", error);
+            if (error.response && error.response.status === 403) {
+                alert("Você não tem permissão para excluir esta reserva.");
+            } else {
+                console.error("Erro ao reserva de ambiente:", error);
+            }
         });
     };
 
