@@ -24,17 +24,23 @@ export function Menu() {
         }
     };
 
+    const cargo = localStorage.getItem('cargo');
+
     return (
         <div className={styles.menu}>
             <div className={styles.container}>
-                <div className={`${styles.card} ${styles.card1}`} onClick={() => setSelectedCard('users')}>
-                    <a href="#">Usuários</a>
-                    <User className={styles.user}/>
-                </div>
-                <div className={`${styles.card} ${styles.card2}`} onClick={() => setSelectedCard('teachers')}>
-                    <a href="#">Professores</a>
-                    <GraduationCap className={styles.graduationCap}/>
-                </div>
+                {cargo === 'G' && (
+                    <div className={`${styles.card} ${styles.card1}`} onClick={() => setSelectedCard('users')}>
+                        <a href="#">Usuários</a>
+                        <User className={styles.user}/>
+                    </div>
+                )}
+                {cargo === 'G' && (
+                    <div className={`${styles.card} ${styles.card2}`} onClick={() => setSelectedCard('teachers')}>
+                        <a href="#">Professores</a>
+                        <GraduationCap className={styles.graduationCap}/>
+                    </div>
+                )}
                 <div className={`${styles.card} ${styles.card3}`} onClick={() => setSelectedCard('disciplines')}>
                     <a href="#">Disciplinas</a>
                     <FileChartColumnIncreasing className={styles.fileChart}/>
