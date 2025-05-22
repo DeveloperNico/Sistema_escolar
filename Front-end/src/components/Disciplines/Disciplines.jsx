@@ -28,6 +28,22 @@ export function Disciplines() {
 
     useEffect(() => {
         const loadProfessores = async () => {
+            const token = localStorage.getItem('token');
+
+            axios.get('http://localhost:8000/api/disciplinas/', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                setDisciplinas(response.data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error("Erro ao buscar disciplinas:", error);
+                setLoading(false);
+            });
+
             try {
                 const [resProfs] = await Promise.all([
                     api.get('usuarios/'),
@@ -71,24 +87,6 @@ export function Disciplines() {
         const horas = input.toString().replace(/[^\d]/g, "");
         return `${horas}h`;
     };
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-
-        axios.get('http://localhost:8000/api/disciplinas/', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        .then(response => {
-            setDisciplinas(response.data);
-            setLoading(false);
-        })
-        .catch(error => {
-            console.error("Erro ao buscar disciplinas:", error);
-            setLoading(false);
-        });
-    }, []);
 
     const handleDelete = (id) => {
         const token = localStorage.getItem('token');

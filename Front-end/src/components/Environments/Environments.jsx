@@ -28,7 +28,7 @@ export function Environments() {
     });
 
     useEffect(() => {
-            const loadData = async () => {
+        const loadData = async () => {
             const token = localStorage.getItem('token');
 
             axios.get('http://localhost:8000/api/reservasambiente/', {
