@@ -32,12 +32,10 @@ export function Environments() {
             try {
                 const token = localStorage.getItem('token');
 
-                // Fazendo requisição para reservas com token no header
                 const resReservas = await axios.get('http://localhost:8000/api/reservasambiente/', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
-                // Professores e disciplinas podem continuar com a instância api ou igual
                 const resProfs = await axios.get('http://localhost:8000/api/usuarios/', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
@@ -49,6 +47,9 @@ export function Environments() {
                 setReservas(resReservas.data);
                 setProfessores(resProfs.data);
                 setDisciplinas(resDiscs.data);
+
+                console.log("Token usado:", localStorage.getItem('token'));
+                console.log("Cargo do usuário:", localStorage.getItem('cargo'));
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
             } finally {
