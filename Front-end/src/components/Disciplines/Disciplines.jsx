@@ -17,7 +17,6 @@ export function Disciplines() {
     const [loading, setLoading] = useState(true);
     const [professores, setProfessores] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [usuario, setUsuario] = useState(null);
 
     const [newDiscipline, setNewDiscipline] = useState({
         nome: '',
@@ -30,12 +29,10 @@ export function Disciplines() {
     useEffect(() => {
         const loadProfessores = async () => {
             try {
-                const [resProfs, ResUser] = await Promise.all([
+                const [resProfs] = await Promise.all([
                     api.get('usuarios/'),
-                    api.get('me/')
                 ]);
                 setProfessores(resProfs.data);
-                setUsuario(ResUser.data);
             } catch (error) {
                 console.error("Erro ao carregar professores:", error);
             } finally {
@@ -117,12 +114,14 @@ export function Disciplines() {
 
     if (loading) return <p>Carregando disciplinas...</p>;
 
+    const cargo = localStorage.getItem('cargo');
+
     return (
         <div className={styles.center}>
             <div className={styles.container}>
                 <div className={styles.header}>
                     <h1>Disciplinas</h1>
-                    {usuario?.cargo === 'G' && (
+                    {cargo === 'G' && (
                         <button className={styles.addButton} onClick={() => setShowModal(true)}>
                             <Plus />
                             Add. Disciplina

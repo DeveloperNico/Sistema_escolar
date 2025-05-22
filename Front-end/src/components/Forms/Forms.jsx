@@ -23,6 +23,17 @@ export function Forms() {
 
             localStorage.setItem("token", access);
 
+            const userRes = await axios.get("http://localhost:8000/api/me/", {
+                headers: { Authorization: `Bearer ${access}` }
+            });
+
+            const { cargo } = userRes.data;
+
+            localStorage.setItem("cargo", cargo);
+
+            console.log("Nome do usuário:", userRes.data.username);
+            console.log("Cargo do usuário:", cargo);
+
             navigate("/home");
         } catch (error) {
             alert("Erro ao fazer login. Verifique suas credenciais.");
