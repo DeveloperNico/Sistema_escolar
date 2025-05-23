@@ -14,35 +14,89 @@ export function Users() {
     const [newUser, setNewUser] = useState({
         username: '',
         password: '',
-        caro: 'P',
+        cargo: 'P',
         ni: '',
         telefone: '',
         dt_nascimento: '',
         dt_contratacao: ''
     });
+    const [isEditing, setIsEditing] = useState(false);
+    const [editUserId, setEditUserId] = useState(null);
+
+    const handleEdit = (id) => {
+        setNewUser({
+            username: id.username,
+            password: id.password,
+            cargo: id.cargo,
+            ni: id.ni,
+            telefone: id.telefone,
+            dt_nascimento: id.dt_nascimento,
+            dt_contratacao: id.dt_contratacao
+        });
+        setEditUserId(id.id);
+        setIsEditing(true);
+        setShowModal(true);
+    };
     
+    const resetForm = () => {
+        setNewUser({
+            username: '',
+            password: '',
+            cargo: 'P',
+            ni: '',
+            telefone: '',
+            dt_nascimento: '',
+            dt_contratacao: ''
+        });
+        setEditUserId(null);
+        setIsEditing(false);
+        setShowModal(false);
+    };
+
     const handleCreateUser = (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-    
-        axios.post('http://localhost:8000/api/usuarios/', newUser, {
+
+        if (isEditing) {
+            axios.put(`http://localhost:8000/api/usuarios/${editUserId}/`, newUser, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                axios.get('http://localhost:8000/api/usuarios/', {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                setUsuarios(prev => prev.map(user => user.id === editUserId ? response.data : user));
+                setShowModal(false);
+                resetForm();
+            })
+            .catch(error => {
+                console.error("Erro ao editar usuário:", error);
+            });
+        } else {
+            axios.post('http://localhost:8000/api/usuarios/', newUser, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                setUsuarios(prev => [...prev, response.data]);
+                resetForm();
+            })
+            .catch(error => {
+                console.error("Erro ao criar usuário:", error);
+            });
+        }
+        
+    };
+
+    const handleDelete = (id) => {
+        const token = localStorage.getItem('token');
+        axios.delete(`http://localhost:8000/api/usuarios/${id}/`, {
             headers: { Authorization: `Bearer ${token}` }
         })
-        .then(response => {
-            setUsuarios(prev => [...prev, response.data]);
-            setShowModal(false);
-            setNewUser({
-                username: '',
-                password: '',
-                cargo: 'P',
-                ni: '',
-                telefone: '',
-                dt_nascimento: '',
-                dt_contratacao: ''
-            });
+        .then(() => {
+            setUsuarios(prev => prev.filter(user => user.id !== id));
         })
         .catch(error => {
-            console.error("Erro ao criar usuário:", error);
+            console.error("Erro ao deletar usuário:", error);
         });
     };
     
@@ -75,26 +129,6 @@ export function Users() {
             setLoading(false);
         });
     }, []);
-
-    const handleDelete = (id) => {
-        const token = localStorage.getItem('token');
-        axios.delete(`http://localhost:8000/api/usuarios/${id}/`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(() => {
-            setUsuarios(prev => prev.filter(user => user.id !== id));
-        })
-        .catch(error => {
-            console.error("Erro ao deletar usuário:", error);
-        });
-    };
-
-    const handleEdit = (id) => {
-        // Aqui você pode redirecionar para uma tela de edição ou abrir um modal
-        console.log("Editar usuário com ID:", id);
-        // Exemplo: navigate(`/editar-usuario/${id}`);
-    };
-
 
     if (loading) return <p>Carregando usuários...</p>
 
@@ -132,7 +166,7 @@ export function Users() {
                     ))}
                 </div>
             </div>  
-            <Modal title="Cadastrar novo usuário" isOpen={showModal} onClose={() => setShowModal(false)}>
+            <Modal title={isEditing ? "Editar usuário" : "Cadastrar novo usuário"} isOpen={showModal} onClose={resetForm}>
                 <form onSubmit={handleCreateUser} className={styles.form}>
                     <label>
                         Nome de usuário:
@@ -166,7 +200,9 @@ export function Users() {
                         <input className={styles.inputModal} type="date" value={newUser.dt_contratacao} onChange={(e) => setNewUser({ ...newUser, dt_contratacao: e.target.value })} />
                     </label>
 
-                    <button className={styles.button} type="submit">Cadastrar</button>
+                    <button className={styles.button} type="submit">
+                        {isEditing ? "Salvar" : "Cadastrar"}
+                    </button>
                 </form>
             </Modal>
         </div>
