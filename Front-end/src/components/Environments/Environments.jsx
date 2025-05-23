@@ -178,12 +178,16 @@ export function Environments() {
                             <p><strong>Disciplina:</strong> {r.disciplina_associada?.nome || 'N/A'}</p>
                             <p><strong>Professor:</strong> {r.professor_responsavel?.username || 'N/A'}</p>
                             <div className={styles.actions}>
-                                <button onClick={() => handleDelete(r.id)} className={`${styles.iconButton} ${styles.iconTrash}`}>
-                                    <Trash2 />
-                                </button>
-                                <button onClick={() => handleEdit(r)} className={`${styles.iconButton} ${styles.iconPencil}`}>
-                                    <Pencil />
-                                </button>
+                                {cargo === 'G' && (
+                                    <button onClick={() => handleDelete(r.id)} className={`${styles.iconButton} ${styles.iconTrash}`}>
+                                        <Trash2 />
+                                    </button>
+                                )}
+                                {cargo === 'G' && (
+                                    <button onClick={() => handleEdit(r)} className={`${styles.iconButton} ${styles.iconPencil}`}>
+                                        <Pencil />
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ))}

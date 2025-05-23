@@ -170,12 +170,16 @@ export function Disciplines() {
                             <p><strong>Professor:</strong> {d.professor_responsavel?.username || "Professor não encontrado"}</p>
 
                             <div className={styles.actions}>
-                                <button onClick={() => handleDelete(d.id)} className={`${styles.iconButton} ${styles.iconTrash}`}>
-                                    <Trash2 />
-                                </button>
-                                <button onClick={() => handleEdit(d)} className={`${styles.iconButton} ${styles.iconPencil}`}>
-                                    <Pencil />
-                                </button>
+                                {cargo === 'G' && (
+                                    <button onClick={() => handleDelete(d.id)} className={`${styles.iconButton} ${styles.iconTrash}`}>
+                                        <Trash2 />
+                                    </button>
+                                )}
+                                {cargo === 'G' && (
+                                    <button onClick={() => handleEdit(d)} className={`${styles.iconButton} ${styles.iconPencil}`}>
+                                        <Pencil />
+                                    </button>
+                                )}
                             </div>
                         </div>
                     ))}
