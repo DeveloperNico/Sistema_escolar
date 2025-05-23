@@ -26,6 +26,75 @@ export function Environments() {
         professor_responsavel_id: '',
         disciplina_associada_id: ''
     });
+    const [isEditing, setIsEditing] = useState(false);
+    const [editEnvironmentId, setEditEnvironmentId] = useState(null);
+
+    const handleEdit = (environment) => {
+        const formatForInput = (isoString) => {
+            const date = new Date(isoString);
+            const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            return local.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:MM"
+        };
+
+        setNewEnvironment({
+            dt_inicio: formatForInput(environment.dt_inicio),
+            dt_termino: formatForInput(environment.dt_termino),
+            periodo: environment.periodo,
+            sala_reservada: environment.sala_reservada,
+            professor_responsavel_id: environment.professor_responsavel_id,
+            disciplina_associada_id: environment.disciplina_associada_id
+        });
+        setEditEnvironmentId(environment.id);
+        setIsEditing(true);
+        setShowModal(true);
+    };
+
+    const resetForm = () => {
+        setNewEnvironment({
+            dt_inicio: '',
+            dt_termino: '',
+            periodo: 'Manhã',
+            sala_reservada: '',
+            professor_responsavel_id: '',
+            disciplina_associada_id: ''
+        });
+        setEditEnvironmentId(null);
+        setIsEditing(false);
+        setShowModal(false);
+    };
+
+    const handleCreateEnvironment = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+
+        if (isEditing) {
+            axios.put(`http://localhost:8000/api/reservasambiente/${editEnvironmentId}/`, newEnvironment, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                axios.get('http://localhost:8000/api/reservasambiente/', {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                setReservas(prev => prev.map(reserva => reserva.id === editEnvironmentId ? response.data : reserva));
+                setShowModal(false);
+                resetForm();
+            })
+            .catch(error => {
+                console.error("Erro ao editar reserva:", error);
+            });
+        } else {
+            axios.post('http://localhost:8000/api/reservasambiente/', newEnvironment, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                setReservas(prev => [...prev, response.data]);
+                resetForm();
+            })
+            .catch(error => {
+                console.error("Erro ao criar reserva:", error);
+            });
+        }
+    };
 
     useEffect(() => {
         const loadData = async () => {
@@ -61,25 +130,6 @@ export function Environments() {
 
         loadData();
     }, []);
-
-    const handleCreateEnvironment = async (e) => {
-        e.preventDefault();
-        try {
-            const res = await api.post('reservasambiente/', newEnvironment);
-            setReservas(prev => [...prev, res.data]);
-            setShowModal(false);
-            setNewEnvironment({
-                dt_inicio: '',
-                dt_termino: '',
-                periodo: 'Manhã',
-                sala_reservada: '',
-                professor_responsavel_id: '',
-                disciplina_associada_id: ''
-            });
-        } catch (error) {
-            console.error("Erro ao reservar ambiente:", error);
-        }
-    };
 
     const handleDelete = (id) => {
         const token = localStorage.getItem('token');
@@ -131,7 +181,7 @@ export function Environments() {
                                 <button onClick={() => handleDelete(r.id)} className={`${styles.iconButton} ${styles.iconTrash}`}>
                                     <Trash2 />
                                 </button>
-                                <button onClick={() => console.log("Editar", r)} className={`${styles.iconButton} ${styles.iconPencil}`}>
+                                <button onClick={() => handleEdit(r)} className={`${styles.iconButton} ${styles.iconPencil}`}>
                                     <Pencil />
                                 </button>
                             </div>
@@ -140,7 +190,7 @@ export function Environments() {
                 </div>
             </div>
 
-            <Modal title="Reservar novo ambiente" isOpen={showModal} onClose={() => setShowModal(false)}>
+            <Modal title={isEditing ? "Editar reserva" : "Reservar novo ambiente"} isOpen={showModal} onClose={resetForm}>
                 <form onSubmit={handleCreateEnvironment} className={styles.form}>
                     <label>
                         Data de início:
@@ -186,7 +236,9 @@ export function Environments() {
                             ))}
                         </select>
                     </label>
-                    <button className={styles.button} type="submit">Reservar</button>
+                    <button className={styles.button} type="submit">
+                        {isEditing ? "Salvar" : "Reservar"}
+                    </button>
                 </form>
             </Modal>
         </div>
