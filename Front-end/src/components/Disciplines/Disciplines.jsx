@@ -96,11 +96,7 @@ export function Disciplines() {
             setDisciplinas(prev => prev.filter(d => d.id !== id));
         })
         .catch(error => {
-            if (error.response?.status === 403) {
-                alert("Você não tem permissão para deletar disciplinas.");
-            } else {
-                console.error("Erro ao deletar disciplina:", error);
-            }
+            console.error("Erro ao deletar disciplina:", error);
         });
     };
 
