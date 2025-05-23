@@ -25,6 +25,84 @@ export function Disciplines() {
         descricao: '',
         professor_responsavel_id: ''
     });
+    const [isEditing, setIsEditing] = useState(false);
+    const [editDisciplineId, setEditDisciplineId] = useState(null);
+
+    const handleEdit = (discipline) => {
+        setNewDiscipline({
+            nome: discipline.nome,
+            curso: discipline.curso,
+            carga_horaria: discipline.carga_horaria,
+            descricao: discipline.descricao,
+            professor_responsavel_id: discipline.professor_responsavel_id
+        });
+        setEditDisciplineId(discipline.id);
+        setIsEditing(true);
+        setShowModal(true);
+    };
+
+    const resetForm = () => {
+        setNewDiscipline({
+            nome: '',
+            curso: '',
+            carga_horaria: '',
+            descricao: '',
+            professor_responsavel_id: ''
+        });
+        setEditDisciplineId(null);
+        setIsEditing(false);
+        setShowModal(false);
+    };
+    
+    const handleCreateDiscipline = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+
+        if (isEditing) {
+            axios.put(`http://localhost:8000/api/disciplinas/${editDisciplineId}/`, newDiscipline, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                axios.get('http://localhost:8000/api/disciplinas/', {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                setDisciplinas(prev => prev.map(d => d.id === editDisciplineId ? response.data : d));
+                setShowModal(false);
+                resetForm();
+            })
+            .catch(error => {
+                console.error("Erro ao editar disciplina:", error);
+            })
+        } else {
+            axios.post('http://localhost:8000/api/disciplinas/', newDiscipline, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(response => {
+                setDisciplinas(prev => [...prev, response.data]);
+                resetForm();
+            })
+            .catch(error => {
+                console.error("Erro ao criar disciplina:", error);
+            });
+        }
+    };
+
+    const handleDelete = (id) => {
+        const token = localStorage.getItem('token');
+        axios.delete(`http://localhost:8000/api/disciplinas/${id}/`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(() => {
+            setDisciplinas(prev => prev.filter(d => d.id !== id));
+        })
+        .catch(error => {
+            if (error.response?.status === 403) {
+                alert("Você não tem permissão para deletar disciplinas.");
+            } else {
+                console.error("Erro ao deletar disciplina:", error);
+            }
+        });
+    };
 
     useEffect(() => {
         const loadProfessores = async () => {
@@ -59,55 +137,11 @@ export function Disciplines() {
         loadProfessores();
     }, []);
 
-    const handleCreateDiscipline = async (e) => {
-        e.preventDefault();
-        try {
-            const res = await api.post('disciplinas/', newDiscipline);
-            setDisciplinas(prev => [...prev, res.data]);
-            setShowModal(false);
-            setNewDiscipline({
-                nome: '',
-                curso: '',
-                carga_horaria: '',
-                descricao: '',
-                professor_responsavel_id: ''
-            });
-        } catch (error) {
-            if (error.response?.status === 403) {
-                alert("Você não tem permissão para criar disciplinas.");
-            } else {
-                console.error("Erro ao criar disciplina:", error);
-                console.log("Detalhes do erro:", error.response?.data);
-            }
-        }
-    };
 
     const formatHour = (input) => {
         if (!input) return "";
         const horas = input.toString().replace(/[^\d]/g, "");
         return `${horas}h`;
-    };
-
-    const handleDelete = (id) => {
-        const token = localStorage.getItem('token');
-        axios.delete(`http://localhost:8000/api/disciplinas/${id}/`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(() => {
-            setDisciplinas(prev => prev.filter(d => d.id !== id));
-        })
-        .catch(error => {
-            if (error.response?.status === 403) {
-                alert("Você não tem permissão para deletar disciplinas.");
-            } else {
-                console.error("Erro ao deletar disciplina:", error);
-            }
-        });
-    };
-
-    const handleEdit = (disciplina) => {
-        console.log("Editar disciplina com ID:", disciplina.id);
-        // Exemplo: navigate(`/editar-disciplina/${disciplina.id}`);
     };
 
     if (loading) return <p>Carregando disciplinas...</p>;
@@ -147,7 +181,7 @@ export function Disciplines() {
                     ))}
                 </div>
             </div>
-            <Modal title="Adicionar nova disciplina" isOpen={showModal} onClose={() => setShowModal(false)}>
+            <Modal title={isEditing ? "Editar disciplina" : "Adicionar nova disciplina"} isOpen={showModal} onClose={resetForm}>
                 <form onSubmit={handleCreateDiscipline} className={styles.form}>
                     <label>
                         Nome:
@@ -179,7 +213,9 @@ export function Disciplines() {
                         </select>
                     </label>
 
-                    <button className={styles.button} type="submit">Adicionar</button>
+                    <button className={styles.button} type="submit">
+                        {isEditing ? "Salvar" : "Adicionar"}
+                    </button>
                 </form>
             </Modal>
         </div>

@@ -84,7 +84,6 @@ export function Users() {
                 console.error("Erro ao criar usuário:", error);
             });
         }
-        
     };
 
     const handleDelete = (id) => {
