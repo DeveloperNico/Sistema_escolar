@@ -4,6 +4,11 @@ import axios from 'axios';
 import { Modal } from '../Modal/Modal';
 import { Trash2, Pencil, Plus } from 'lucide-react';
 
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
+
 const api = axios.create({
     baseURL: 'http://localhost:8000/api/',
     headers: {
@@ -97,15 +102,30 @@ export function Environments() {
     };
 
     const handleDelete = (id) => {
-        const token = localStorage.getItem('token');
-        axios.delete(`http://localhost:8000/api/reservasambiente/${id}/`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(() => {
-            setReservas(prev => prev.filter(reservas => reservas.id !== id));
-        })
-        .catch(error => {
-            console.error("Erro ao reserva de ambiente:", error);
+        MySwal.fire({
+            title: 'Tem certeza?',
+            text: 'Você não poderá reverter essa ação!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sim, excluir!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const token = localStorage.getItem('token');
+                axios.delete(`http://localhost:8000/api/ambientes/${id}/`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                .then(() => {
+                    setReservas(prev => prev.filter(reservas => reservas.id !== id));
+                    Swal.fire('Excluído!', 'A reserva foi removida.', 'success');
+                })
+                .catch(error => {
+                    console.error("Erro ao deletar reserva:", error);
+                    Swal.fire('Erro', 'Não foi possível excluir a reserva.', 'error');
+                });
+            }
         });
     };
     
