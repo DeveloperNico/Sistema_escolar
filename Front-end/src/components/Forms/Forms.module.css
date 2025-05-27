@@ -53,7 +53,6 @@
     font-size: 16px;
     outline: none;
     border-radius: 5px;
-    margin-bottom: 20px;
 }
 
 .username {
@@ -66,6 +65,7 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin-top: 20px;
 }
 
 .buttonContainer {
@@ -94,6 +94,18 @@
     border-radius: 10px;
     margin-bottom: 20px;
 }
+
+.error {
+    color: #f02a2a;
+    font-size: 14px;
+}
+
+.errorButton {
+    color: #f02a2a;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
 
 @media (max-width: 1260px) {
     .form {
