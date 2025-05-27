@@ -120,28 +120,10 @@ export function Users() {
             }
         })
         .then(response => {
-            setUsuarios(response.data.usuarios || response.data);
-            setLoading(false);
-        })
-        .catch(error => {
-            console.error("Erro ao buscar usuários:", error);
-            setLoading(false);
-        });
-    }, []);
-
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-
-        axios.get('http://localhost:8000/api/usuarios/', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        .then(response => {
             setTimeout(() => {
                 setUsuarios(response.data.usuarios || response.data);
                 setLoading(false);
-            }, 2000);
+            }, 1000);
         })
         .catch(error => {
             console.error("Erro ao buscar usuários:", error);
@@ -157,8 +139,6 @@ export function Users() {
             </div>
         );
     }
-
-    if (loading) return <p>Carregando usuários...</p>
 
     return (
         <div className={styles.center}>

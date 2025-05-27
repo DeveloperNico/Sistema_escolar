@@ -100,31 +100,33 @@ export function Disciplines() {
         });
     };
 
+    const formatHour = (input) => {
+        if (!input) return "";
+        const horas = input.toString().replace(/[^\d]/g, "");
+        return `${horas}h`;
+    };
+
     useEffect(() => {
         const loadProfessores = async () => {
             const token = localStorage.getItem('token');
 
-            axios.get('http://localhost:8000/api/disciplinas/', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                setDisciplinas(response.data);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error("Erro ao buscar disciplinas:", error);
-                setLoading(false);
-            });
-
             try {
-                const [resProfs] = await Promise.all([
-                    api.get('usuarios/'),
+                const delay = new Promise(resolve => setTimeout(resolve, 1000)); // espera de 1 segundo
+
+                const [resDisciplinas, resProfessores] = await Promise.all([
+                    axios.get('http://localhost:8000/api/disciplinas/', {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }),
+                    axios.get('http://localhost:8000/api/usuarios/', {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }),
+                    delay
                 ]);
-                setProfessores(resProfs.data);
+
+                setDisciplinas(resDisciplinas.data);
+                setProfessores(resProfessores.data);
             } catch (error) {
-                console.error("Erro ao carregar professores:", error);
+                console.error("Erro ao carregar dados:", error);
             } finally {
                 setLoading(false);
             }
@@ -133,14 +135,14 @@ export function Disciplines() {
         loadProfessores();
     }, []);
 
-
-    const formatHour = (input) => {
-        if (!input) return "";
-        const horas = input.toString().replace(/[^\d]/g, "");
-        return `${horas}h`;
-    };
-
-    if (loading) return <p>Carregando disciplinas...</p>;
+    if (loading) {
+        return (
+            <div className={styles.loadingContainer}>
+                <div className={styles.spinner}></div>
+                <p>Carregando usuários...</p>
+            </div>
+        );
+    }
 
     const cargo = localStorage.getItem('cargo');
 

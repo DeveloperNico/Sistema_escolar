@@ -15,24 +15,6 @@ export function Teachers() {
         return `${dia}/${mes}/${ano}`;
     };
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-
-        axios.get('http://localhost:8000/api/professores/', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        .then(response => {
-            setProfessores(response.data.professores || response.data); // garante compatibilidade
-            setLoading(false);
-        })
-        .catch(error => {
-            console.error("Erro ao buscar professores:", error);
-            setLoading(false);
-        });
-    }, []);
-
     const handleDelete = (id) => {
         const token = localStorage.getItem('token');
         axios.delete(`http://localhost:8000/api/usuarios/${id}/`, {
@@ -46,13 +28,34 @@ export function Teachers() {
         });
     };
 
-    const handleEdit = (professor) => {
-        // Aqui você pode redirecionar para uma tela de edição ou abrir um modal
-        console.log("Editar professor com ID:", professor.id);
-        // Exemplo: navigate(`/editar-professor/${professor.id}`);
-    };
+    useEffect(() => {
+        const token = localStorage.getItem('token');
 
-    if (loading) return <p>Carregando professores...</p>;
+        axios.get('http://localhost:8000/api/professores/', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            setTimeout(() => {
+                setProfessores(response.data.professores || response.data);
+                setLoading(false);
+            }, 1000);
+        })
+        .catch(error => {
+            console.error("Erro ao buscar usuários:", error);
+            setLoading(false);
+        });
+    }, []);
+
+    if (loading) {
+        return (
+            <div className={styles.loadingContainer}>
+                <div className={styles.spinner}></div>
+                <p>Carregando usuários...</p>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.center}>

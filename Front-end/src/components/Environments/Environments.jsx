@@ -96,41 +96,6 @@ export function Environments() {
         }
     };
 
-    useEffect(() => {
-        const loadData = async () => {
-            const token = localStorage.getItem('token');
-
-            axios.get('http://localhost:8000/api/reservasambiente/', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            .then(response => {
-                setReservas(response.data);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error("Erro ao carregar reservas:", error);
-                setLoading(false);
-            });
-
-            try {
-                const [resEnvironment, resProfessores, resDisciplinas] = await Promise.all ([
-                    api.get('reservasambiente/'),
-                    api.get('usuarios/'),
-                    api.get('disciplinas/')
-                ]);
-                setReservas(resEnvironment.data);
-                setProfessores(resProfessores.data);
-                setDisciplinas(resDisciplinas.data);
-            } catch (error) {
-                console.error("Erro ao carregar dados:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadData();
-    }, []);
-
     const handleDelete = (id) => {
         const token = localStorage.getItem('token');
         axios.delete(`http://localhost:8000/api/reservasambiente/${id}/`, {
@@ -143,13 +108,53 @@ export function Environments() {
             console.error("Erro ao reserva de ambiente:", error);
         });
     };
-
+    
     const formatDateTime = (datetime) => {
         const date = new Date(datetime);
         return date.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     };
 
-    if (loading) return <p>Carregando reservas...</p>;
+    useEffect(() => {
+        const loadData = async () => {
+            const token = localStorage.getItem('token');
+
+            try {
+                const delay = new Promise(resolve => setTimeout(resolve, 800)); // Garante 1s de carregamento
+
+                const [resReservas, resProfessores, resDisciplinas] = await Promise.all([
+                    axios.get('http://localhost:8000/api/reservasambiente/', {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }),
+                    axios.get('http://localhost:8000/api/usuarios/', {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }),
+                    axios.get('http://localhost:8000/api/disciplinas/', {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }),
+                    delay
+                ]);
+
+                setReservas(resReservas.data);
+                setProfessores(resProfessores.data);
+                setDisciplinas(resDisciplinas.data);
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadData();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className={styles.loadingContainer}>
+                <div className={styles.spinner}></div>
+                <p>Carregando usuários...</p>
+            </div>
+        );
+    }
 
     const cargo = localStorage.getItem('cargo');
 
