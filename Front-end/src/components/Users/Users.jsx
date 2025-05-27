@@ -2,6 +2,7 @@ import styles from './Users.module.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal } from '../Modal/Modal';
+import api from '../../api/axios';
 
 import { Trash2 } from 'lucide-react';
 import { Pencil } from 'lucide-react';
@@ -63,11 +64,11 @@ export function Users() {
         const token = localStorage.getItem('token');
 
         if (isEditing) {
-            axios.put(`http://localhost:8000/api/usuarios/${editUserId}/`, newUser, {
+            api.put(`http://localhost:8000/api/usuarios/${editUserId}/`, newUser, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then(response => {
-                axios.get('http://localhost:8000/api/usuarios/', {
+                api.get('http://localhost:8000/api/usuarios/', {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 setUsuarios(prev => prev.map(user => user.id === editUserId ? response.data : user));
@@ -78,7 +79,7 @@ export function Users() {
                 console.error("Erro ao editar usuário:", error);
             });
         } else {
-            axios.post('http://localhost:8000/api/usuarios/', newUser, {
+            api.post('http://localhost:8000/api/usuarios/', newUser, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then(response => {
@@ -134,7 +135,7 @@ export function Users() {
     useEffect(() => {
         const token = localStorage.getItem('token');
 
-        axios.get('http://localhost:8000/api/usuarios/', {
+        api.get('http://localhost:8000/api/usuarios/', {
             headers: {
                 Authorization: `Bearer ${token}`
             }
