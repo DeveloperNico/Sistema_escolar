@@ -3,3 +3,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.swal2-popup {
+  font-family: 'Poppins', sans-serif; /* ou qualquer outra fonte */
+}

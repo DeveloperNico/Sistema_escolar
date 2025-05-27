@@ -7,6 +7,10 @@ import { Trash2 } from 'lucide-react';
 import { Pencil } from 'lucide-react';
 import { Plus } from 'lucide-react';
 
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+const MySwal = withReactContent(Swal);
+
 export function Users() {
     const [usuarios, setUsuarios] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -87,18 +91,33 @@ export function Users() {
     };
 
     const handleDelete = (id) => {
-        const token = localStorage.getItem('token');
-        axios.delete(`http://localhost:8000/api/usuarios/${id}/`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(() => {
-            setUsuarios(prev => prev.filter(user => user.id !== id));
-        })
-        .catch(error => {
-            console.error("Erro ao deletar usuário:", error);
+        MySwal.fire({
+            title: 'Tem certeza?',
+            text: 'Você não poderá reverter essa ação!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sim, excluir!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const token = localStorage.getItem('token');
+                axios.delete(`http://localhost:8000/api/usuarios/${id}/`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                .then(() => {
+                    setUsuarios(prev => prev.filter(user => user.id !== id));
+                    Swal.fire('Excluído!', 'O usuário foi removido.', 'success');
+                })
+                .catch(error => {
+                    console.error("Erro ao deletar usuário:", error);
+                    Swal.fire('Erro', 'Não foi possível excluir o usuário.', 'error');
+                });
+            }
         });
     };
-    
+
     const cargoLabel = (sigla) => {
         if (sigla === "G") return "Gestor";
         if (sigla === "P") return "Professor";
