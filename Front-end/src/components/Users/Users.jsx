@@ -129,6 +129,35 @@ export function Users() {
         });
     }, []);
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+
+        axios.get('http://localhost:8000/api/usuarios/', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            setTimeout(() => {
+                setUsuarios(response.data.usuarios || response.data);
+                setLoading(false);
+            }, 2000);
+        })
+        .catch(error => {
+            console.error("Erro ao buscar usuários:", error);
+            setLoading(false);
+        });
+    }, []);
+
+    if (loading) {
+        return (
+            <div className={styles.loadingContainer}>
+                <div className={styles.spinner}></div>
+                <p>Carregando usuários...</p>
+            </div>
+        );
+    }
+
     if (loading) return <p>Carregando usuários...</p>
 
     return (
