@@ -15,19 +15,6 @@ export function Teachers() {
         return `${dia}/${mes}/${ano}`;
     };
 
-    const handleDelete = (id) => {
-        const token = localStorage.getItem('token');
-        axios.delete(`http://localhost:8000/api/usuarios/${id}/`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-        .then(() => {
-            setProfessores(prev => prev.filter(prof => prof.id !== id)); // Corrigido aqui
-        })
-        .catch(error => {
-            console.error("Erro ao deletar professor:", error);
-        });
-    };
-
     useEffect(() => {
         const token = localStorage.getItem('token');
 
@@ -73,15 +60,6 @@ export function Teachers() {
                             <p><strong>Telefone:</strong> {professor.telefone}</p>
                             <p><strong>Nascimento:</strong> {formatDate(professor.dt_nascimento)}</p>
                             <p><strong>Contratação:</strong> {formatDate(professor.dt_contratacao)}</p>
-
-                            <div className={styles.actions}>
-                                <button onClick={() => handleDelete(professor.id)} className={`${styles.iconButton} ${styles.iconTrash}`}>
-                                    <Trash2 />
-                                </button>
-                                <button onClick={() => handleEdit(professor)} className={`${styles.iconButton} ${styles.iconPencil}`}>
-                                    <Pencil />
-                                </button>
-                            </div>
                         </div>
                     ))}
                 </div>
