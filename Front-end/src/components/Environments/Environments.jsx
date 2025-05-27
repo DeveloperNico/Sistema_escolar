@@ -1,6 +1,7 @@
 import styles from './Environments.module.css';
 import { useState, useEffect, use } from 'react';
 import axios from 'axios';
+import api from '../../api/axios';
 import { Modal } from '../Modal/Modal';
 import { Trash2, Pencil, Plus } from 'lucide-react';
 
@@ -9,7 +10,7 @@ import withReactContent from 'sweetalert2-react-content';
 
 const MySwal = withReactContent(Swal);
 
-const api = axios.create({
+const Api = axios.create({
     baseURL: 'http://localhost:8000/api/',
     headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -73,11 +74,11 @@ export function Environments() {
         const token = localStorage.getItem('token');
 
         if (isEditing) {
-            axios.put(`http://localhost:8000/api/reservasambiente/${editEnvironmentId}/`, newEnvironment, {
+            api.put(`http://localhost:8000/api/reservasambiente/${editEnvironmentId}/`, newEnvironment, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then(response => {
-                axios.get('http://localhost:8000/api/reservasambiente/', {
+                api.get('http://localhost:8000/api/reservasambiente/', {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 setReservas(prev => prev.map(reserva => reserva.id === editEnvironmentId ? response.data : reserva));
@@ -88,7 +89,7 @@ export function Environments() {
                 console.error("Erro ao editar reserva:", error);
             });
         } else {
-            axios.post('http://localhost:8000/api/reservasambiente/', newEnvironment, {
+            api.post('http://localhost:8000/api/reservasambiente/', newEnvironment, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then(response => {
@@ -114,7 +115,7 @@ export function Environments() {
         }).then((result) => {
             if (result.isConfirmed) {
                 const token = localStorage.getItem('token');
-                axios.delete(`http://localhost:8000/api/ambientes/${id}/`, {
+                api.delete(`http://localhost:8000/api/ambientes/${id}/`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 .then(() => {
@@ -142,13 +143,13 @@ export function Environments() {
                 const delay = new Promise(resolve => setTimeout(resolve, 800)); // Garante 1s de carregamento
 
                 const [resReservas, resProfessores, resDisciplinas] = await Promise.all([
-                    axios.get('http://localhost:8000/api/reservasambiente/', {
+                    api.get('http://localhost:8000/api/reservasambiente/', {
                         headers: { Authorization: `Bearer ${token}` }
                     }),
-                    axios.get('http://localhost:8000/api/usuarios/', {
+                    api.get('http://localhost:8000/api/usuarios/', {
                         headers: { Authorization: `Bearer ${token}` }
                     }),
-                    axios.get('http://localhost:8000/api/disciplinas/', {
+                    api.get('http://localhost:8000/api/disciplinas/', {
                         headers: { Authorization: `Bearer ${token}` }
                     }),
                     delay

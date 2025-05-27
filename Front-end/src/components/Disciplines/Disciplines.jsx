@@ -1,6 +1,7 @@
 import styles from './Disciplines.module.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import api from '../../api/axios';
 import { Modal } from '../Modal/Modal';
 
 import { Trash2, Pencil, Plus } from 'lucide-react';
@@ -10,7 +11,7 @@ import withReactContent from 'sweetalert2-react-content';
 
 const MySwal = withReactContent(Swal);
 
-const api = axios.create({
+const Api = axios.create({
     baseURL: 'http://localhost:8000/api/',
     headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -64,11 +65,11 @@ export function Disciplines() {
         const token = localStorage.getItem('token');
 
         if (isEditing) {
-            axios.put(`http://localhost:8000/api/disciplinas/${editDisciplineId}/`, newDiscipline, {
+            api.put(`http://localhost:8000/api/disciplinas/${editDisciplineId}/`, newDiscipline, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then(response => {
-                axios.get('http://localhost:8000/api/disciplinas/', {
+                api.get('http://localhost:8000/api/disciplinas/', {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 setDisciplinas(prev => prev.map(d => d.id === editDisciplineId ? response.data : d));
@@ -79,7 +80,7 @@ export function Disciplines() {
                 console.error("Erro ao editar disciplina:", error);
             })
         } else {
-            axios.post('http://localhost:8000/api/disciplinas/', newDiscipline, {
+            api.post('http://localhost:8000/api/disciplinas/', newDiscipline, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then(response => {
@@ -105,7 +106,7 @@ export function Disciplines() {
         }).then((result) => {
             if (result.isConfirmed) {
                 const token = localStorage.getItem('token');
-                axios.delete(`http://localhost:8000/api/disciplinas/${id}/`, {
+                api.delete(`http://localhost:8000/api/disciplinas/${id}/`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 .then(() => {
@@ -134,10 +135,10 @@ export function Disciplines() {
                 const delay = new Promise(resolve => setTimeout(resolve, 1000)); // espera de 1 segundo
 
                 const [resDisciplinas, resProfessores] = await Promise.all([
-                    axios.get('http://localhost:8000/api/disciplinas/', {
+                    api.get('http://localhost:8000/api/disciplinas/', {
                         headers: { Authorization: `Bearer ${token}` }
                     }),
-                    axios.get('http://localhost:8000/api/usuarios/', {
+                    api.get('http://localhost:8000/api/usuarios/', {
                         headers: { Authorization: `Bearer ${token}` }
                     }),
                     delay

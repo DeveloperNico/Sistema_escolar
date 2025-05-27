@@ -1,9 +1,7 @@
 import styles from './Teachers.module.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
-import { Trash2 } from 'lucide-react';
-import { Pencil } from 'lucide-react';
+import api from '../../api/axios';
 
 export function Teachers() {
     const [professores, setProfessores] = useState([]);
@@ -18,7 +16,7 @@ export function Teachers() {
     useEffect(() => {
         const token = localStorage.getItem('token');
 
-        axios.get('http://localhost:8000/api/professores/', {
+        api.get('http://localhost:8000/api/professores/', {
             headers: {
                 Authorization: `Bearer ${token}`
             }
