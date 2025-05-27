@@ -139,7 +139,7 @@ export function Disciplines() {
         return (
             <div className={styles.loadingContainer}>
                 <div className={styles.spinner}></div>
-                <p>Carregando usuários...</p>
+                <p>Carregando disciplinas...</p>
             </div>
         );
     }

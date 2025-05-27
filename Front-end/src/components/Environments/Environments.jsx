@@ -151,7 +151,7 @@ export function Environments() {
         return (
             <div className={styles.loadingContainer}>
                 <div className={styles.spinner}></div>
-                <p>Carregando usuários...</p>
+                <p>Carregando ambientes...</p>
             </div>
         );
     }
