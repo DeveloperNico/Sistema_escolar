@@ -119,7 +119,6 @@
     border-radius: 5px;
     border: 2px solid #ccc;
     font-size: 16px;
-    margin-bottom: 20px;
 }
 
 .inputChoices {
@@ -128,7 +127,6 @@
     border-radius: 5px;
     border: 2px solid #ccc;
     font-size: 16px;
-    margin-bottom: 20px;
 }
 
 .button {
@@ -141,6 +139,12 @@
     border: none;
     color: #fff;
     font-size: 16px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .button:hover {
@@ -173,6 +177,12 @@
 
 .swal2-popup {
   font-family: 'Poppins', sans-serif; /* ou qualquer outra fonte */
+}
+
+.error {
+    color: #f02a2a;
+    font-size: 14px;
+    display: flex;
 }
 
 @keyframes spin {

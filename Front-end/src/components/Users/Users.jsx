@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal } from '../Modal/Modal';
 import api from '../../api/axios';
+import { set, z } from 'zod';
 
 import { Trash2 } from 'lucide-react';
 import { Pencil } from 'lucide-react';
@@ -12,6 +13,70 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 const MySwal = withReactContent(Swal);
+
+// Funções auxiliares para validação de data
+function isValidDate(dateString) {
+  const date = new Date(dateString);
+  return !isNaN(date.getTime()) && dateString === date.toISOString().split("T")[0];
+}
+
+function getYear(dateString) {
+  return new Date(dateString).getFullYear();
+}
+
+const userSchema = z.object({
+    username: z.string()
+        .min(3, "Nome de usuário deve ter pelo menos 3 caracteres")
+        .max(15, "Nome de usuário deve ter no máximo 15 caracteres"),
+    password: z.string({required_error: "Senha é obrigatória"})
+        .max(15, "Senha deve ter no máximo 15 caracteres"),
+    cargo: z.enum(['P', 'G'], { 
+        message: "Cargo deve ser 'P' (Professor) ou 'G' (Gestor)" 
+    }),
+    ni: z.string()
+        .min(8, "NI deve ter no máximo 8 caracteres"),
+    telefone: z.string()
+        .min(13, "Telefone deve ter no máximo 13 caracteres no formato XX XXXXX-XXXX"),
+
+    dt_nascimento: z.string()
+        .refine(isValidDate, {
+            message: "Data de nascimento deve ser uma data válida no formato YYYY-MM-DD",
+        })
+        .refine((val) => {
+            const year = getYear(val);
+            return year >= 1950 && year <= 2025;
+        }, {
+            message: 'Ano de nascimento deve estar entre 1950 e 2025'
+        }),
+
+    dt_contratacao: z.string()
+        .refine(isValidDate, {
+            message: "Data de contratação deve ser uma data válida no formato YYYY-MM-DD",
+        })
+        .refine((val) => {
+            const year = getYear(val);
+            return year >= 1950 && year <= 2025;
+        }, {
+            message: "Ano de contratação deve estar entre 1950 e 2025"
+        }),
+}).refine(data => {
+    if (!isValidDate(data.dt_nascimento) || !isValidDate(data.dt_contratacao)) return true;
+
+    const nascimento = new Date(data.dt_nascimento);
+    const contratacao = new Date(data.dt_contratacao);
+
+    const idade = contratacao.getFullYear() - nascimento.getFullYear();
+    const aniversarioPassou = 
+        contratacao.getMonth() > nascimento.getMonth() || 
+        (contratacao.getMonth() === nascimento.getMonth() && contratacao.getDate() >= nascimento.getDate());
+
+    const idadeReal = aniversarioPassou ? idade : idade - 1;
+
+    return idadeReal >= 16;
+}, {
+    message: "Usuário deve ter no mínimo 16 anos na data da contratação",
+    path: ['dt_contratacao']
+});
 
 export function Users() {
     const [usuarios, setUsuarios] = useState([]);
@@ -28,6 +93,7 @@ export function Users() {
     });
     const [isEditing, setIsEditing] = useState(false);
     const [editUserId, setEditUserId] = useState(null);
+    const [formErrors, setFormErrors] = useState({});
 
     const handleEdit = (id) => {
         setNewUser({
@@ -63,16 +129,25 @@ export function Users() {
         e.preventDefault();
         const token = localStorage.getItem('token');
 
+        const validation = userSchema.safeParse(newUser);
+
+        if (!validation.success) {
+            const fieldErrors = {};
+            validation.error.errors.forEach(err => {
+                fieldErrors[err.path[0]] = err.message;
+            });
+            setFormErrors(fieldErrors);
+            return;
+        }
+
+        setFormErrors({}); // Limpa erros se passou na validação
+
         if (isEditing) {
             api.put(`http://localhost:8000/api/usuarios/${editUserId}/`, newUser, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then(response => {
-                api.get('http://localhost:8000/api/usuarios/', {
-                    headers: { Authorization: `Bearer ${token}` }
-                })
                 setUsuarios(prev => prev.map(user => user.id === editUserId ? response.data : user));
-                setShowModal(false);
                 resetForm();
             })
             .catch(error => {
@@ -196,37 +271,43 @@ export function Users() {
                 </div>
             </div>  
             <Modal title={isEditing ? "Editar usuário" : "Cadastrar novo usuário"} isOpen={showModal} onClose={resetForm}>
-                <form onSubmit={handleCreateUser} className={styles.form}>
-                    <label>
+                <form onSubmit={handleCreateUser} className={styles.form} noValidate>
+                    <label className={styles.label}>
                         Nome de usuário:
-                        <input className={styles.inputModal} type="text" value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value })} required />
+                        <input className={styles.inputModal} type="text" value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value })} />
+                        {formErrors.username && <span className={styles.error}>{formErrors.username}</span>}
                     </label>
-                    <label>
+                    <label className={styles.label}>
                         Senha:
-                        <input className={styles.inputModal} type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} required />
+                        <input className={styles.inputModal} type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} />
+                        {formErrors.password && <span className={styles.error}>{formErrors.password}</span>}
                     </label>
-                    <label>
+                    <label className={styles.label}>
                         Cargo:
                         <select className={styles.inputChoices} value={newUser.cargo} onChange={(e) => setNewUser({ ...newUser, cargo: e.target.value })}>
                             <option value="P">Professor</option>
                             <option value="G">Gestor</option>
                         </select>
                     </label>
-                    <label>
+                    <label className={styles.label}>
                         NI:
                         <input className={styles.inputModal} type="text" value={newUser.ni} onChange={(e) => setNewUser({ ...newUser, ni: e.target.value })} />
+                        {formErrors.ni && <span className={styles.error}>{formErrors.ni}</span>}
                     </label>
-                    <label>
+                    <label className={styles.label}>
                         Telefone:
                         <input className={styles.inputModal} type="text" value={newUser.telefone} onChange={(e) => setNewUser({ ...newUser, telefone: e.target.value })} />
+                        {formErrors.telefone && <span className={styles.error}>{formErrors.telefone}</span>}
                     </label>
-                    <label>
+                    <label className={styles.label}>
                         Data de nascimento:
                         <input className={styles.inputModal} type="date" value={newUser.dt_nascimento} onChange={(e) => setNewUser({ ...newUser, dt_nascimento: e.target.value })} />
+                        {formErrors.dt_nascimento && <span className={styles.error}>{formErrors.dt_nascimento}</span>}
                     </label>
-                    <label>
+                    <label className={styles.label}>
                         Data de contratação:
                         <input className={styles.inputModal} type="date" value={newUser.dt_contratacao} onChange={(e) => setNewUser({ ...newUser, dt_contratacao: e.target.value })} />
+                        {formErrors.dt_contratacao && <span className={styles.error}>{formErrors.dt_contratacao}</span>}
                     </label>
 
                     <button className={styles.button} type="submit">
