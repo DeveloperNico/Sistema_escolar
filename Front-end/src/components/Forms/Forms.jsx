@@ -1,6 +1,6 @@
 import styles from "./Forms.module.css";
 import { BookOpenText } from 'lucide-react';
-import { useState } from "react";
+import { useState, useEffect, use } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { set, z } from "zod";
@@ -69,6 +69,12 @@ export function Forms() {
             setLoginError("Erro ao fazer login. Verifique suas credenciais.");
         }
     };
+
+    useEffect(() => {
+        localStorage.removeItem("access");
+        localStorage.removeItem("refresh");
+        localStorage.removeItem("token");
+    }, []);
 
     return (
         <div className={styles.container}>
