@@ -29,6 +29,7 @@ const userSchema = z.object({
         .min(3, "Nome de usuário deve ter pelo menos 3 caracteres")
         .max(15, "Nome de usuário deve ter no máximo 15 caracteres"),
     password: z.string({required_error: "Senha é obrigatória"})
+        .min(1, "Senha é obrigatória")
         .max(15, "Senha deve ter no máximo 15 caracteres"),
     cargo: z.enum(['P', 'G'], { 
         message: "Cargo deve ser 'P' (Professor) ou 'G' (Gestor)" 
